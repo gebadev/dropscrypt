@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DropSCrypt</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ヘッダー -->
+  <header>
+    <h1>DropSCrypt</h1>
+    <span id="version" class="version"></span>
+  </header>
+
+  <!-- gpg 警告バナー（非表示がデフォルト） -->
+  <div id="gpg-warning" class="warning-banner hidden">
+    ⚠️ gpg.exe が見つかりません。GnuPG (Gpg4win) をインストールして PATH を通してください。
+  </div>
+
+  <!-- 操作エリア -->
+  <section class="operation-area">
+    <div id="drop-zone" class="drop-zone">
+      <p>ファイルまたはフォルダをここにドロップ</p>
+    </div>
+
+    <div class="passphrase-row">
+      <label for="passphrase">パスフレーズ:</label>
+      <input type="password" id="passphrase" placeholder="パスフレーズを入力" autocomplete="off" />
+      <button id="toggle-passphrase" type="button">表示</button>
+    </div>
+    <div id="passphrase-error" class="field-error hidden">パスフレーズを入力してください</div>
+
+    <div class="button-row">
+      <button id="btn-encrypt" class="btn-primary" disabled>暗号化</button>
+      <button id="btn-decrypt" class="btn-primary" disabled>復号</button>
+    </div>
+  </section>
+
+  <!-- ファイル一覧 -->
+  <section class="file-list-area">
+    <table id="file-table">
+      <thead>
+        <tr>
+          <th class="col-name">ファイル名</th>
+          <th class="col-size">サイズ</th>
+          <th class="col-status">状態</th>
+        </tr>
+      </thead>
+      <tbody id="file-tbody"></tbody>
+    </table>
+  </section>
+
+  <!-- ステータスバー -->
+  <footer class="status-bar">
+    <div class="progress-bar-wrap">
+      <div id="progress-bar" class="progress-bar"></div>
+    </div>
+    <div id="status-text" class="status-text">ファイルをドロップしてください</div>
+  </footer>
+
+  <script src="renderer.js"></script>
+</body>
+</html>

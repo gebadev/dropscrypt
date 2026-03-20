@@ -1,0 +1,33 @@
+# 依存パッケージ
+node_modules/
+
+# ビルド成果物
+dist/
+
+# electron-builder のキャッシュ
+.electron-builder-cache/
+
+# OS 生成ファイル
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Claude Code（個人設定のみ除外、共有設定は含める）
+.claude/settings.local.json
+
+# エディタ・IDE
+.vscode/
+.idea/
+*.suo
+*.user
+
+# ログ
+*.log
+npm-debug.log*
+
+# 環境変数
+.env
+.env.local
+
+# テスト・カバレッジ
+coverage/

@@ -1,0 +1,197 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Segoe UI', Meiryo, sans-serif;
+  font-size: 14px;
+  background: #f5f5f5;
+  color: #333;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* ヘッダー */
+header {
+  background: #2d6cdf;
+  color: #fff;
+  padding: 10px 16px;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+header h1 {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.version {
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+/* 警告バナー */
+.warning-banner {
+  background: #fff3cd;
+  border-bottom: 1px solid #ffc107;
+  color: #856404;
+  padding: 8px 16px;
+  font-size: 13px;
+}
+
+.hidden { display: none !important; }
+
+/* 操作エリア */
+.operation-area {
+  padding: 16px;
+  background: #fff;
+  border-bottom: 1px solid #ddd;
+  flex-shrink: 0;
+}
+
+.drop-zone {
+  border: 2px dashed #aaa;
+  border-radius: 8px;
+  padding: 28px;
+  text-align: center;
+  color: #888;
+  cursor: default;
+  transition: background 0.15s, border-color 0.15s;
+  user-select: none;
+}
+
+.drop-zone.drag-over {
+  background: #e8f0fe;
+  border-color: #2d6cdf;
+  color: #2d6cdf;
+}
+
+/* パスフレーズ行 */
+.passphrase-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.passphrase-row label {
+  white-space: nowrap;
+}
+
+.passphrase-row input {
+  flex: 1;
+  padding: 6px 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.passphrase-row input.input-error {
+  border-color: #dc3545;
+}
+
+.field-error {
+  color: #dc3545;
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+/* ボタン行 */
+.button-row {
+  display: flex;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.btn-primary {
+  flex: 1;
+  padding: 10px;
+  background: #2d6cdf;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, opacity 0.15s;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: #1a52b8;
+}
+
+.btn-primary:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* ファイル一覧 */
+.file-list-area {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 16px 8px;
+}
+
+#file-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 8px;
+}
+
+#file-table th,
+#file-table td {
+  padding: 6px 8px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+  font-size: 13px;
+}
+
+#file-table th {
+  position: sticky;
+  top: 0;
+  background: #f5f5f5;
+  font-weight: 600;
+}
+
+.col-name { width: 60%; word-break: break-all; }
+.col-size { width: 15%; text-align: right; }
+.col-status { width: 25%; }
+
+.status-processing { color: #888; }
+.status-success    { color: #198754; }
+.status-skipped    { color: #856404; }
+.status-failed     { color: #dc3545; }
+
+/* ステータスバー */
+.status-bar {
+  background: #fff;
+  border-top: 1px solid #ddd;
+  padding: 8px 16px;
+  flex-shrink: 0;
+}
+
+.progress-bar-wrap {
+  height: 6px;
+  background: #eee;
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+
+.progress-bar {
+  height: 100%;
+  width: 0%;
+  background: #2d6cdf;
+  transition: width 0.2s;
+}
+
+.status-text {
+  font-size: 12px;
+  color: #555;
+}
