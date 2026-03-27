@@ -11,11 +11,6 @@ const fileTbody      = document.getElementById('file-tbody');
 const progressBar    = document.getElementById('progress-bar');
 const statusText     = document.getElementById('status-text');
 const gpgWarning     = document.getElementById('gpg-warning');
-const versionEl      = document.getElementById('version');
-
-// バージョン表示
-versionEl.textContent = `v${window.dropscrypt?.version ?? '1.0.0'}`;
-
 // --- 状態 ---
 let droppedPaths = [];   // ドロップされたファイル/フォルダパス
 let isProcessing = false;
