@@ -11,6 +11,11 @@ contextBridge.exposeInMainWorld('dropscrypt', {
   startDecrypt: (filePaths, passphrase) =>
     ipcRenderer.send('decrypt:start', { filePaths, passphrase }),
 
+  // 設定
+  getSettings: () => ipcRenderer.invoke('settings:get'),
+  setSettings: (config) => ipcRenderer.send('settings:set', config),
+  browseGpg: () => ipcRenderer.invoke('settings:browse-gpg'),
+
   // メイン → レンダラー（イベントリスナー登録）
   onGpgValidateResult: (callback) =>
     ipcRenderer.on('validate:gpg:result', (_e, data) => callback(data)),

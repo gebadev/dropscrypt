@@ -2,6 +2,7 @@ const { app, BrowserWindow, dialog, Menu } = require('electron');
 const path = require('path');
 const { registerIpcHandlers } = require('./ipcHandlers');
 const { resolveGpgPath } = require('./gpgRunner');
+const { loadConfig } = require('./config');
 
 function createWindow() {
   const win = new BrowserWindow({
@@ -22,7 +23,8 @@ function createWindow() {
 
   // gpg.exe 存在確認（起動後に通知）
   win.webContents.once('did-finish-load', () => {
-    const gpgPath = resolveGpgPath();
+    const config = loadConfig();
+    const gpgPath = resolveGpgPath(config.gpgPath);
     win.webContents.send('validate:gpg:result', { found: !!gpgPath, path: gpgPath });
   });
 }

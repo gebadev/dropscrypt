@@ -11,6 +11,17 @@ const fileTbody      = document.getElementById('file-tbody');
 const progressBar    = document.getElementById('progress-bar');
 const statusText     = document.getElementById('status-text');
 const gpgWarning     = document.getElementById('gpg-warning');
+const btnSettings    = document.getElementById('btn-settings');
+
+// 設定モーダル要素
+const settingsOverlay   = document.getElementById('settings-overlay');
+const settingsGpgPath   = document.getElementById('settings-gpg-path');
+const settingsBrowse    = document.getElementById('settings-browse');
+const settingsEncArgs   = document.getElementById('settings-encrypt-args');
+const settingsDecArgs   = document.getElementById('settings-decrypt-args');
+const settingsCancel    = document.getElementById('settings-cancel');
+const settingsSave      = document.getElementById('settings-save');
+
 // --- 状態 ---
 let droppedPaths = [];   // ドロップされたファイル/フォルダパス
 let isProcessing = false;
@@ -28,7 +39,10 @@ window.dropscrypt.onGpgValidateResult((data) => {
     gpgWarning.classList.remove('hidden');
     btnEncrypt.disabled = true;
     btnDecrypt.disabled = true;
+  } else {
+    gpgWarning.classList.add('hidden');
   }
+  updateButtons();
 });
 
 // Electron のデフォルト動作（ドロップファイルをページとして読み込む）を抑制
@@ -180,6 +194,41 @@ window.dropscrypt.onComplete((data) => {
   statusText.textContent =
     `完了 — 成功: ${success}　スキップ: ${skipped}　失敗: ${failed}`;
   updateButtons();
+});
+
+// --- 設定モーダル ---
+btnSettings.addEventListener('click', async () => {
+  const config = await window.dropscrypt.getSettings();
+  settingsGpgPath.value  = config.gpgPath        || '';
+  settingsEncArgs.value  = config.extraEncryptArgs || '';
+  settingsDecArgs.value  = config.extraDecryptArgs || '';
+  settingsOverlay.classList.remove('hidden');
+});
+
+settingsCancel.addEventListener('click', () => {
+  settingsOverlay.classList.add('hidden');
+});
+
+settingsOverlay.addEventListener('click', (e) => {
+  if (e.target === settingsOverlay) settingsOverlay.classList.add('hidden');
+});
+
+settingsBrowse.addEventListener('click', async () => {
+  const selected = await window.dropscrypt.browseGpg();
+  if (selected) settingsGpgPath.value = selected;
+});
+
+settingsSave.addEventListener('click', () => {
+  const config = {
+    gpgPath:          settingsGpgPath.value.trim(),
+    extraEncryptArgs: settingsEncArgs.value.trim(),
+    extraDecryptArgs: settingsDecArgs.value.trim(),
+  };
+  window.dropscrypt.setSettings(config);
+  settingsOverlay.classList.add('hidden');
+
+  // gpg パスが変わった可能性があるので再検証
+  window.dropscrypt.validateGpg();
 });
 
 // --- ヘルパー ---

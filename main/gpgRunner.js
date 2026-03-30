@@ -4,7 +4,15 @@ const path = require('path');
 
 const FALLBACK_GPG_PATH = 'C:\\Program Files (x86)\\GnuPG\\bin\\gpg.exe';
 
-function resolveGpgPath() {
+/**
+ * gpg.exe のパスを解決する。
+ * @param {string} [customPath] - 設定で指定されたパス（空文字 or 未指定なら自動検出）
+ */
+function resolveGpgPath(customPath) {
+  if (customPath && customPath.trim()) {
+    return fs.existsSync(customPath.trim()) ? customPath.trim() : null;
+  }
+
   // 1. PATH から検索
   try {
     const result = execFileSync('gpg', ['--version'], { encoding: 'utf8', timeout: 3000 });
@@ -20,16 +28,27 @@ function resolveGpgPath() {
 }
 
 /**
+ * 追加引数文字列をスペース区切りで配列に変換する。
+ * @param {string} str
+ * @returns {string[]}
+ */
+function parseExtraArgs(str) {
+  if (!str || !str.trim()) return [];
+  return str.trim().split(/\s+/);
+}
+
+/**
  * gpg.exe を実行してファイルを暗号化または復号する。
  * @param {'encrypt'|'decrypt'} mode
  * @param {string} inputPath
  * @param {string} outputPath
  * @param {string} passphrase
+ * @param {{ gpgPath?: string, extraEncryptArgs?: string, extraDecryptArgs?: string }} [config]
  * @returns {Promise<{success: boolean, stderr: string}>}
  */
-function runGpg(mode, inputPath, outputPath, passphrase) {
+function runGpg(mode, inputPath, outputPath, passphrase, config = {}) {
   return new Promise((resolve) => {
-    const gpgPath = resolveGpgPath();
+    const gpgPath = resolveGpgPath(config.gpgPath);
     if (!gpgPath) {
       resolve({ success: false, stderr: 'gpg.exe が見つかりません' });
       return;
@@ -44,8 +63,10 @@ function runGpg(mode, inputPath, outputPath, passphrase) {
 
     if (mode === 'encrypt') {
       args.push('--symmetric', '--cipher-algo', 'AES256');
+      args.push(...parseExtraArgs(config.extraEncryptArgs));
     } else {
       args.push('--decrypt');
+      args.push(...parseExtraArgs(config.extraDecryptArgs));
     }
     args.push(inputPath);
 
