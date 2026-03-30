@@ -11,11 +11,12 @@
   <!-- ヘッダー -->
   <header>
     <h1>DropSCrypt</h1>
+    <button id="btn-settings" class="btn-header-settings" type="button" title="設定">⚙</button>
   </header>
 
   <!-- gpg 警告バナー（非表示がデフォルト） -->
   <div id="gpg-warning" class="warning-banner hidden">
-    ⚠️ gpg.exe が見つかりません。GnuPG (Gpg4win) をインストールして PATH を通してください。
+    ⚠️ gpg.exe が見つかりません。GnuPG (Gpg4win) をインストールするか、設定でパスを指定してください。
   </div>
 
   <!-- 操作エリア -->
@@ -58,6 +59,39 @@
     </div>
     <div id="status-text" class="status-text">ファイルをドロップしてください</div>
   </footer>
+
+  <!-- 設定モーダル -->
+  <div id="settings-overlay" class="modal-overlay hidden">
+    <div class="modal">
+      <h2 class="modal-title">設定</h2>
+
+      <div class="settings-row">
+        <label class="settings-label" for="settings-gpg-path">gpg.exe パス</label>
+        <div class="settings-input-group">
+          <input type="text" id="settings-gpg-path" class="settings-input" placeholder="空欄 = 自動検出" />
+          <button id="settings-browse" type="button" class="btn-browse">参照...</button>
+        </div>
+        <div class="settings-hint">空欄の場合は PATH → C:\Program Files (x86)\GnuPG\bin\gpg.exe の順に自動検出します</div>
+      </div>
+
+      <div class="settings-row">
+        <label class="settings-label" for="settings-encrypt-args">暗号化 追加引数</label>
+        <input type="text" id="settings-encrypt-args" class="settings-input" placeholder="例: --compress-level 0" />
+        <div class="settings-hint">スペース区切りで gpg の引数を追加できます</div>
+      </div>
+
+      <div class="settings-row">
+        <label class="settings-label" for="settings-decrypt-args">復号 追加引数</label>
+        <input type="text" id="settings-decrypt-args" class="settings-input" placeholder="" />
+        <div class="settings-hint">スペース区切りで gpg の引数を追加できます</div>
+      </div>
+
+      <div class="modal-buttons">
+        <button id="settings-cancel" type="button" class="btn-secondary">キャンセル</button>
+        <button id="settings-save" type="button" class="btn-primary">保存</button>
+      </div>
+    </div>
+  </div>
 
   <script src="renderer.js"></script>
 </body>

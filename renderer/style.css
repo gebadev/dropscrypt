@@ -190,3 +190,133 @@ header h1 {
   font-size: 12px;
   color: #555;
 }
+
+/* ヘッダー設定ボタン */
+.btn-header-settings {
+  margin-left: auto;
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.5);
+  color: #fff;
+  border-radius: 4px;
+  padding: 2px 8px;
+  font-size: 16px;
+  cursor: pointer;
+  line-height: 1.4;
+  transition: background 0.15s;
+}
+
+.btn-header-settings:hover {
+  background: rgba(255,255,255,0.15);
+}
+
+/* モーダルオーバーレイ */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.modal {
+  background: #fff;
+  border-radius: 8px;
+  padding: 24px;
+  width: 480px;
+  max-width: 90vw;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+}
+
+.modal-title {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+/* 設定行 */
+.settings-row {
+  margin-bottom: 16px;
+}
+
+.settings-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 5px;
+  color: #333;
+}
+
+.settings-input {
+  width: 100%;
+  padding: 6px 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 13px;
+  font-family: 'Consolas', monospace;
+}
+
+.settings-input:focus {
+  outline: none;
+  border-color: #2d6cdf;
+}
+
+.settings-input-group {
+  display: flex;
+  gap: 6px;
+}
+
+.settings-input-group .settings-input {
+  flex: 1;
+}
+
+.btn-browse {
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+  background: #f5f5f5;
+  border-radius: 4px;
+  font-size: 13px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s;
+}
+
+.btn-browse:hover {
+  background: #e8e8e8;
+}
+
+.settings-hint {
+  font-size: 11px;
+  color: #888;
+  margin-top: 4px;
+}
+
+/* モーダルボタン行 */
+.modal-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 24px;
+}
+
+.btn-secondary {
+  padding: 8px 18px;
+  background: #fff;
+  color: #333;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.btn-secondary:hover {
+  background: #f0f0f0;
+}
+
+.modal-buttons .btn-primary {
+  flex: none;
+  padding: 8px 18px;
+  font-size: 14px;
+}

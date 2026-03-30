@@ -1,14 +1,32 @@
-const { ipcMain } = require('electron');
+const { ipcMain, dialog } = require('electron');
 const path = require('path');
 const fs = require('fs');
 const { resolveEncryptTargets, resolveDecryptTargets } = require('./fileProcessor');
 const { runGpg, resolveGpgPath } = require('./gpgRunner');
+const { loadConfig, saveConfig } = require('./config');
 
 function registerIpcHandlers(win) {
   // gpg.exe 存在確認
   ipcMain.on('validate:gpg', () => {
-    const gpgPath = resolveGpgPath();
+    const config = loadConfig();
+    const gpgPath = resolveGpgPath(config.gpgPath);
     win.webContents.send('validate:gpg:result', { found: !!gpgPath, path: gpgPath });
+  });
+
+  // 設定取得
+  ipcMain.handle('settings:get', () => loadConfig());
+
+  // 設定保存
+  ipcMain.on('settings:set', (_e, config) => saveConfig(config));
+
+  // gpg.exe ファイル選択ダイアログ
+  ipcMain.handle('settings:browse-gpg', async () => {
+    const { canceled, filePaths } = await dialog.showOpenDialog(win, {
+      title: 'gpg.exe を選択',
+      filters: [{ name: 'Executable', extensions: ['exe'] }],
+      properties: ['openFile'],
+    });
+    return canceled ? null : filePaths[0];
   });
 
   // 暗号化開始
@@ -20,6 +38,7 @@ function registerIpcHandlers(win) {
       return;
     }
 
+    const config = loadConfig();
     let success = 0, skipped = 0, failed = 0;
 
     for (const inputPath of targets) {
@@ -39,7 +58,7 @@ function registerIpcHandlers(win) {
 
       win.webContents.send('process:progress', { file: fileName, status: 'processing' });
 
-      const result = await runGpg('encrypt', inputPath, outputPath, passphrase);
+      const result = await runGpg('encrypt', inputPath, outputPath, passphrase, config);
 
       if (result.success) {
         success++;
@@ -69,6 +88,7 @@ function registerIpcHandlers(win) {
       return;
     }
 
+    const config = loadConfig();
     let success = 0, skipped = 0, failed = 0;
 
     for (const target of targets) {
@@ -99,7 +119,7 @@ function registerIpcHandlers(win) {
 
       win.webContents.send('process:progress', { file: fileName, status: 'processing' });
 
-      const result = await runGpg('decrypt', target.path, outputPath, passphrase);
+      const result = await runGpg('decrypt', target.path, outputPath, passphrase, config);
 
       if (result.success) {
         success++;
