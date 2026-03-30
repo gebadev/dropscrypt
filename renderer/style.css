@@ -31,11 +31,6 @@ header h1 {
   font-weight: 700;
 }
 
-.version {
-  font-size: 12px;
-  opacity: 0.8;
-}
-
 /* 警告バナー */
 .warning-banner {
   background: #fff3cd;
