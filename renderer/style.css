@@ -154,9 +154,32 @@ header h1 {
   font-weight: 600;
 }
 
-.col-name { width: 60%; word-break: break-all; }
+.col-name { width: 55%; word-break: break-all; }
 .col-size { width: 15%; text-align: right; }
-.col-status { width: 25%; }
+.col-status { width: 22%; }
+.col-remove { width: 40px; text-align: center; }
+
+.btn-remove {
+  background: transparent;
+  border: none;
+  color: #aaa;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 3px;
+  line-height: 1;
+  transition: color 0.15s, background 0.15s;
+}
+
+.btn-remove:hover {
+  color: #dc3545;
+  background: #fdecea;
+}
+
+.btn-remove:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
 
 .status-processing { color: #888; }
 .status-success    { color: #198754; }

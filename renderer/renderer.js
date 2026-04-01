@@ -80,7 +80,7 @@ function renderDroppedPaths() {
   doneCount = 0;
   progressBar.style.width = '0%';
 
-  for (const p of droppedPaths) {
+  for (const [i, p] of droppedPaths.entries()) {
     const tr = document.createElement('tr');
     const nameParts = p.replace(/\\/g, '/').split('/');
     const displayName = nameParts[nameParts.length - 1];
@@ -88,6 +88,7 @@ function renderDroppedPaths() {
       <td class="col-name" title="${escHtml(p)}">${escHtml(displayName)}</td>
       <td class="col-size">-</td>
       <td class="col-status">-</td>
+      <td class="col-remove"><button class="btn-remove" data-idx="${i}" title="一覧から除去" ${isProcessing ? 'disabled' : ''}>×</button></td>
     `;
     fileTbody.appendChild(tr);
   }
@@ -112,6 +113,16 @@ function updateButtons() {
   btnEncrypt.disabled = !gpgAvailable || !hasFiles || isProcessing;
   btnDecrypt.disabled = !gpgAvailable || !hasFiles || isProcessing;
 }
+
+// --- ファイル除去 ---
+fileTbody.addEventListener('click', (e) => {
+  const btn = e.target.closest('.btn-remove');
+  if (!btn || isProcessing) return;
+  const idx = parseInt(btn.dataset.idx, 10);
+  droppedPaths.splice(idx, 1);
+  renderDroppedPaths();
+  updateButtons();
+});
 
 // --- 暗号化 ---
 btnEncrypt.addEventListener('click', () => {
@@ -176,6 +187,7 @@ window.dropscrypt.onProgress((data) => {
     <td class="col-name" title="${escHtml(file)}">${escHtml(file)}</td>
     <td class="col-size">-</td>
     <td class="col-status ${statusClass(status)}">${label}</td>
+    <td class="col-remove"></td>
   `;
 
   if (status !== 'processing') {
