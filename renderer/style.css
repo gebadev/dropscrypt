@@ -133,6 +133,34 @@ header h1 {
   padding: 0 16px 8px;
 }
 
+.file-list-header {
+  display: flex;
+  justify-content: flex-end;
+  padding: 4px 0 6px;
+}
+
+.btn-clear-all {
+  background: transparent;
+  border: 1px solid #aaa;
+  border-radius: 4px;
+  color: #aaa;
+  cursor: pointer;
+  font-size: 12px;
+  padding: 2px 10px;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+
+.btn-clear-all:hover:not(:disabled) {
+  background: #fdecea;
+  border-color: #dc3545;
+  color: #dc3545;
+}
+
+.btn-clear-all:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
 #file-table {
   width: 100%;
   border-collapse: collapse;

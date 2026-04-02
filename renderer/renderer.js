@@ -8,6 +8,7 @@ const passphraseError = document.getElementById('passphrase-error');
 const btnEncrypt     = document.getElementById('btn-encrypt');
 const btnDecrypt     = document.getElementById('btn-decrypt');
 const fileTbody      = document.getElementById('file-tbody');
+const btnClearAll    = document.getElementById('btn-clear-all');
 const progressBar    = document.getElementById('progress-bar');
 const statusText     = document.getElementById('status-text');
 const gpgWarning     = document.getElementById('gpg-warning');
@@ -59,7 +60,7 @@ dropZone.addEventListener('dragleave', () => {
   dropZone.classList.remove('drag-over');
 });
 
-dropZone.addEventListener('drop', (e) => {
+dropZone.addEventListener('drop', async (e) => {
   e.preventDefault();
   dropZone.classList.remove('drag-over');
 
@@ -68,9 +69,10 @@ dropZone.addEventListener('drop', (e) => {
   const files = Array.from(e.dataTransfer.files);
   if (files.length === 0) return;
 
-  const newPaths = files.map((f) => window.dropscrypt.getFilePath(f));
+  const rawPaths = files.map((f) => window.dropscrypt.getFilePath(f));
+  const expanded = await window.dropscrypt.expandPaths(rawPaths);
   const existing = new Set(droppedPaths);
-  for (const p of newPaths) {
+  for (const p of expanded) {
     if (!existing.has(p)) droppedPaths.push(p);
   }
   renderDroppedPaths();
@@ -97,7 +99,9 @@ function renderDroppedPaths() {
     fileTbody.appendChild(tr);
   }
 
-  statusText.textContent = `${droppedPaths.length} 件のパスが選択されました`;
+  statusText.textContent = droppedPaths.length > 0
+    ? `${droppedPaths.length} 件のパスが選択されました`
+    : 'ファイルをドロップしてください';
 }
 
 // --- パスフレーズ 表示/非表示トグル ---
@@ -116,7 +120,16 @@ function updateButtons() {
   const hasFiles = droppedPaths.length > 0;
   btnEncrypt.disabled = !gpgAvailable || !hasFiles || isProcessing;
   btnDecrypt.disabled = !gpgAvailable || !hasFiles || isProcessing;
+  btnClearAll.disabled = !hasFiles || isProcessing;
 }
+
+// --- 全件クリア ---
+btnClearAll.addEventListener('click', () => {
+  if (isProcessing) return;
+  droppedPaths = [];
+  renderDroppedPaths();
+  updateButtons();
+});
 
 // --- ファイル除去 ---
 fileTbody.addEventListener('click', (e) => {

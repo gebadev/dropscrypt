@@ -57,4 +57,30 @@ function resolveDecryptTargets(droppedPaths) {
   return targets;
 }
 
-module.exports = { resolveEncryptTargets, resolveDecryptTargets };
+/**
+ * ドロップされたパス一覧からフォルダを直下ファイルに展開して返す。
+ * フォルダ → 直下ファイル全件（フィルタなし）
+ * ファイル → そのまま
+ * アクセス不能なパスはスキップ。
+ * @param {string[]} droppedPaths
+ * @returns {string[]}
+ */
+function expandPaths(droppedPaths) {
+  const result = [];
+  for (const p of droppedPaths) {
+    let stat;
+    try { stat = fs.statSync(p); } catch { continue; }
+    if (stat.isDirectory()) {
+      let entries;
+      try { entries = fs.readdirSync(p, { withFileTypes: true }); } catch { continue; }
+      for (const entry of entries) {
+        if (entry.isFile()) result.push(path.join(p, entry.name));
+      }
+    } else if (stat.isFile()) {
+      result.push(p);
+    }
+  }
+  return result;
+}
+
+module.exports = { resolveEncryptTargets, resolveDecryptTargets, expandPaths };

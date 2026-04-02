@@ -1,7 +1,7 @@
 const { ipcMain, dialog } = require('electron');
 const path = require('path');
 const fs = require('fs');
-const { resolveEncryptTargets, resolveDecryptTargets } = require('./fileProcessor');
+const { resolveEncryptTargets, resolveDecryptTargets, expandPaths } = require('./fileProcessor');
 const { runGpg, resolveGpgPath } = require('./gpgRunner');
 const { loadConfig, saveConfig } = require('./config');
 
@@ -18,6 +18,9 @@ function registerIpcHandlers(win) {
 
   // 設定保存
   ipcMain.on('settings:set', (_e, config) => saveConfig(config));
+
+  // フォルダ → 直下ファイル展開
+  ipcMain.handle('paths:expand', (_e, droppedPaths) => expandPaths(droppedPaths));
 
   // gpg.exe ファイル選択ダイアログ
   ipcMain.handle('settings:browse-gpg', async () => {
