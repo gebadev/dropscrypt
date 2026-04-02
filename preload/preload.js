@@ -5,6 +5,7 @@ contextBridge.exposeInMainWorld('dropscrypt', {
   getFilePath: (file) => webUtils.getPathForFile(file),
 
   // レンダラー → メイン
+  expandPaths: (paths) => ipcRenderer.invoke('paths:expand', paths),
   validateGpg: () => ipcRenderer.send('validate:gpg'),
   startEncrypt: (filePaths, passphrase) =>
     ipcRenderer.send('encrypt:start', { filePaths, passphrase }),
