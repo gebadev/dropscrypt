@@ -68,7 +68,11 @@ dropZone.addEventListener('drop', (e) => {
   const files = Array.from(e.dataTransfer.files);
   if (files.length === 0) return;
 
-  droppedPaths = files.map((f) => window.dropscrypt.getFilePath(f));
+  const newPaths = files.map((f) => window.dropscrypt.getFilePath(f));
+  const existing = new Set(droppedPaths);
+  for (const p of newPaths) {
+    if (!existing.has(p)) droppedPaths.push(p);
+  }
   renderDroppedPaths();
   updateButtons();
 });
