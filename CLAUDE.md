@@ -27,21 +27,26 @@ gpg.exe
 
 **メインプロセス側の責務分担:**
 
-- `main/main.js` — `BrowserWindow` 生成・アプリライフサイクル。起動時に `resolveGpgPath()` を呼び `validate:gpg:result` を送信してから `registerIpcHandlers(win)` に `win` 参照を渡す
-- `main/ipcHandlers.js` — `encrypt:start` / `decrypt:start` の IPC を受け取り、`fileProcessor` でターゲットを解決 → `runGpg` でファイル単位に逐次処理 → 進捗を `process:progress` / `process:complete` でレンダラーへ push
-- `main/fileProcessor.js` — ドロップされたパス（ファイル or フォルダ）を実際の処理対象ファイル一覧に変換する。暗号化は `.gpg` を除く直下ファイル、復号は `.gpg` のみ（非 `.gpg` ファイルは `skip: true` オブジェクトとして返す）
-- `main/gpgRunner.js` — `spawn` で gpg.exe を起動し stdin にパスフレーズを書き込む。失敗時は不完全な出力ファイルを削除。`resolveGpgPath()` は PATH → フォールバックパス (`C:\Program Files (x86)\GnuPG\bin\gpg.exe`) の順で検索
+- `main/main.js` — `BrowserWindow` 生成・アプリライフサイクル。`did-finish-load` 後に `loadConfig()` でユーザー設定を読み込み、`resolveGpgPath()` を呼んで `validate:gpg:result` をレンダラーへ送信。その後 `registerIpcHandlers(win)` を呼ぶ
+- `main/ipcHandlers.js` — 全 IPC ハンドラーを登録。`encrypt:start` / `decrypt:start` では `fileProcessor` でターゲットを解決 → `loadConfig()` で設定取得 → `runGpg` でファイル単位に逐次処理 → 進捗を `process:progress` / `process:complete` でレンダラーへ push。設定・gpgパス選択・パス展開の IPC も担当
+- `main/fileProcessor.js` — ドロップされたパス（ファイル or フォルダ）を処理対象ファイル一覧に変換する。`resolveEncryptTargets`: 直下の非 `.gpg` ファイルを返す。`resolveDecryptTargets`: `.gpg` ファイルのみ返す（個別ファイルとして渡された非 `.gpg` は `skip: true` オブジェクト、フォルダ内の非 `.gpg` は一覧に含めない）。`expandPaths`: フィルタなしでフォルダ直下ファイルを展開（UI 表示用）
+- `main/gpgRunner.js` — `spawn` で gpg.exe を起動し stdin にパスフレーズを書き込む。失敗時は不完全な出力ファイルを削除。`resolveGpgPath()` はカスタムパス → PATH → フォールバックパス (`C:\Program Files (x86)\GnuPG\bin\gpg.exe`) の順で検索。`runGpg()` は config の `extraEncryptArgs` / `extraDecryptArgs` を gpg 引数に追加できる
+- `main/config.js` — `app.getPath('userData')/config.json` に設定を永続化。`loadConfig()` / `saveConfig()` を提供。設定項目: `gpgPath`（カスタム gpg.exe パス）、`extraEncryptArgs`（暗号化追加引数）、`extraDecryptArgs`（復号追加引数）
 
 **IPC チャンネル一覧:**
 
-| チャンネル | 方向 | 内容 |
-| --- | --- | --- |
-| `encrypt:start` | renderer → main | `{ filePaths, passphrase }` |
-| `decrypt:start` | renderer → main | `{ filePaths, passphrase }` |
-| `validate:gpg` | renderer → main | gpg.exe 存在確認要求 |
-| `validate:gpg:result` | main → renderer | `{ found: bool, path: string\|null }` |
-| `process:progress` | main → renderer | `{ file, status, message? }` — status: `processing`/`success`/`skipped`/`failed` |
-| `process:complete` | main → renderer | `{ success, skipped, failed }` |
+| チャンネル | 方向 | 種別 | 内容 |
+| --- | --- | --- | --- |
+| `encrypt:start` | renderer → main | send | `{ filePaths, passphrase }` |
+| `decrypt:start` | renderer → main | send | `{ filePaths, passphrase }` |
+| `validate:gpg` | renderer → main | send | gpg.exe 存在確認要求 |
+| `validate:gpg:result` | main → renderer | send | `{ found: bool, path: string\|null }` |
+| `process:progress` | main → renderer | send | `{ file, status, message? }` — status: `processing`/`success`/`skipped`/`failed` |
+| `process:complete` | main → renderer | send | `{ success, skipped, failed }` |
+| `settings:get` | renderer → main | invoke | 設定オブジェクトを返す |
+| `settings:set` | renderer → main | send | 設定オブジェクトを保存 |
+| `settings:browse-gpg` | renderer → main | invoke | gpg.exe 選択ダイアログを開きパスを返す（キャンセル時は `null`） |
+| `paths:expand` | renderer → main | invoke | フォルダを直下ファイルに展開して返す（UI 表示用） |
 
 ## 重要な制約
 
@@ -50,7 +55,3 @@ gpg.exe
 - サブディレクトリの再帰処理は意図的に非対応
 - `sandbox: true` のため `preload.js` は `contextBridge` の橋渡しのみ担う（Node.js API 直接使用不可）
 - 対象プラットフォーム: Windows 10/11 64-bit のみ
-
-## 設計ドキュメント
-
-`docs/basic_design.md` に詳細設計書（機能要件・IPC プロトコル・ファイル処理ロジック・セキュリティ設計・エラーハンドリング）がある。
