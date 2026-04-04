@@ -1,30 +1,32 @@
 # DropSCrypt
 
-## Overview
+## 概要
 
-An Electron app for Windows that lets you encrypt and decrypt files via drag & drop using AES-256 symmetric encryption powered by GnuPG (`gpg.exe`).
+ドラッグ＆ドロップでファイルを暗号化・復号できる Windows 向け Electron アプリです。GnuPG (`gpg.exe`) による AES-256 対称暗号方式を使用しています。
 
-> **Note:** This app is intended for learning purposes only. Do not use it for serious security needs.
+![DropSCrypt スクリーンショット](.github/images/screenshot01.png)
 
-## Requirements
+> **注意:** このアプリは学習目的で作成されています。実際のセキュリティ用途には使用しないでください。
+
+## 動作要件
 
 - Windows 10 / 11 (64-bit)
-- [GnuPG](https://www.gnupg.org/) (`gpg.exe`) installed and available on the `PATH`
+- [GnuPG](https://www.gnupg.org/)（`gpg.exe`）がインストールされ `PATH` に通っていること
 
-## Usage
+## 使い方
 
-1. Launch the app
-2. Enter a passphrase
-3. Drag and drop files or a folder onto the drop area
-4. Select **Encrypt** or **Decrypt** and run
+1. アプリを起動する
+2. パスフレーズを入力する
+3. ファイルまたはフォルダをドロップエリアにドラッグ＆ドロップする
+4. **暗号化** または **復号** を選んで実行する
 
-- **Encrypt:** Saves the encrypted file with a `.gpg` extension in the same folder
-- **Decrypt:** Restores the original file from the `.gpg` file in the same folder
+- **暗号化:** 同じフォルダに `.gpg` 拡張子付きの暗号化ファイルを保存します
+- **復号:** `.gpg` ファイルから元のファイルを同じフォルダに復元します
 
-## Development
+## 開発
 
 ```bash
 npm install
-npm start      # Start in development mode
-npm run dist   # Build Windows installer to dist/
+npm start      # 開発モードで起動
+npm run dist   # Windows インストーラーを dist/ に生成
 ```
