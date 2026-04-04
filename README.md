@@ -4,7 +4,7 @@
 
 ドラッグ＆ドロップでファイルを暗号化・復号できる Windows 向け Electron アプリです。GnuPG (`gpg.exe`) による AES-256 対称暗号方式を使用しています。
 
-<img src=".github/images/screenshot01.png" alt="DropSCrypt スクリーンショット" width="300">
+<img src=".github/images/screenshot01.png" alt="DropSCrypt スクリーンショット" width="400">
 
 > **注意:** このアプリは学習目的で作成されています。実際のセキュリティ用途には使用しないでください。
 
