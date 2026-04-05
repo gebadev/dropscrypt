@@ -2,7 +2,9 @@ const { execFileSync, spawn } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 
-const FALLBACK_GPG_PATH = 'C:\\Program Files (x86)\\GnuPG\\bin\\gpg.exe';
+const FALLBACK_GPG_PATH = process.platform === 'win32'
+  ? 'C:\\Program Files (x86)\\GnuPG\\bin\\gpg.exe'
+  : '/usr/bin/gpg';
 
 /**
  * gpg.exe のパスを解決する。
@@ -50,7 +52,8 @@ function runGpg(mode, inputPath, outputPath, passphrase, config = {}) {
   return new Promise((resolve) => {
     const gpgPath = resolveGpgPath(config.gpgPath);
     if (!gpgPath) {
-      resolve({ success: false, stderr: 'gpg.exe が見つかりません' });
+      const gpgName = process.platform === 'win32' ? 'gpg.exe' : 'gpg';
+      resolve({ success: false, stderr: `${gpgName} が見つかりません` });
       return;
     }
 

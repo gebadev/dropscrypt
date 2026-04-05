@@ -23,6 +23,18 @@ const settingsDecArgs   = document.getElementById('settings-decrypt-args');
 const settingsCancel    = document.getElementById('settings-cancel');
 const settingsSave      = document.getElementById('settings-save');
 
+// --- プラットフォーム別テキスト初期化 ---
+{
+  const isWin = window.dropscrypt.platform === 'win32';
+  document.getElementById('gpg-warning-text').textContent = isWin
+    ? 'gpg.exe が見つかりません。GnuPG (Gpg4win) をインストールするか、設定でパスを指定してください。'
+    : 'gpg が見つかりません。GnuPG をインストールするか、設定でパスを指定してください。';
+  document.getElementById('label-gpg-path').textContent = isWin ? 'gpg.exe パス' : 'gpg パス';
+  document.getElementById('hint-gpg-path').textContent = isWin
+    ? '空欄の場合は PATH → C:\\Program Files (x86)\\GnuPG\\bin\\gpg.exe の順に自動検出します'
+    : '空欄の場合は PATH → /usr/bin/gpg の順に自動検出します';
+}
+
 // --- 状態 ---
 let droppedPaths = [];   // ドロップされたファイル/フォルダパス
 let isProcessing = false;
