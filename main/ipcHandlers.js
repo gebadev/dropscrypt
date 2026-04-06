@@ -24,9 +24,10 @@ function registerIpcHandlers(win) {
 
   // gpg.exe ファイル選択ダイアログ
   ipcMain.handle('settings:browse-gpg', async () => {
+    const isWin = process.platform === 'win32';
     const { canceled, filePaths } = await dialog.showOpenDialog(win, {
-      title: 'gpg.exe を選択',
-      filters: [{ name: 'Executable', extensions: ['exe'] }],
+      title: isWin ? 'gpg.exe を選択' : 'gpg を選択',
+      filters: isWin ? [{ name: 'Executable', extensions: ['exe'] }] : [],
       properties: ['openFile'],
     });
     return canceled ? null : filePaths[0];

@@ -16,7 +16,7 @@
 
   <!-- gpg 警告バナー（非表示がデフォルト） -->
   <div id="gpg-warning" class="warning-banner hidden">
-    ⚠️ gpg.exe が見つかりません。GnuPG (Gpg4win) をインストールするか、設定でパスを指定してください。
+    ⚠️ <span id="gpg-warning-text"></span>
   </div>
 
   <!-- 操作エリア -->
@@ -70,12 +70,12 @@
       <h2 class="modal-title">設定</h2>
 
       <div class="settings-row">
-        <label class="settings-label" for="settings-gpg-path">gpg.exe パス</label>
+        <label class="settings-label" for="settings-gpg-path" id="label-gpg-path">gpg パス</label>
         <div class="settings-input-group">
           <input type="text" id="settings-gpg-path" class="settings-input" placeholder="空欄 = 自動検出" />
           <button id="settings-browse" type="button" class="btn-browse">参照...</button>
         </div>
-        <div class="settings-hint">空欄の場合は PATH → C:\Program Files (x86)\GnuPG\bin\gpg.exe の順に自動検出します</div>
+        <div class="settings-hint" id="hint-gpg-path"></div>
       </div>
 
       <div class="settings-row">

@@ -1,6 +1,8 @@
 const { contextBridge, ipcRenderer, webUtils } = require('electron');
 
 contextBridge.exposeInMainWorld('dropscrypt', {
+  platform: process.platform,
+
   // ファイルパス取得（Electron 32+ で File.path が廃止されたため）
   getFilePath: (file) => webUtils.getPathForFile(file),
 
