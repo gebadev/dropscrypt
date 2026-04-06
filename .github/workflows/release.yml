@@ -33,9 +33,6 @@ jobs:
 
       - name: Build
         run: npm run dist
-        env:
-          # electron-builder がアップロード等を試みないよう明示的に無効化
-          GH_TOKEN: ''
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
